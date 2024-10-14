@@ -1,14 +1,23 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
+import type { Sticker } from '@/models/sticker'
+import InputText from 'primevue/inputtext'
+import { ref } from 'vue'
 import Stiker from '~/components/Stiker.vue'
 import { useStickersStore } from '~/store/stickers'
 
 const stickersStore = useStickersStore()
-const { stickersList } = storeToRefs(stickersStore)
+const { getFilteredStikers } = stickersStore
+const currentStickers = ref<Sticker[]>(getFilteredStikers())
+
+function onSearch(event: Event) {
+  const target = event.target as HTMLTextAreaElement
+  currentStickers.value = getFilteredStikers(target.value)
+}
 </script>
 
 <template>
-  <div class="grid grid-cols-3 gap-2">
-    <Stiker v-for="sticker in stickersList" :key="sticker.id" :sticker="sticker" class="mb-2" />
+  <InputText class="w-full" placeholder="Поиск по стикерам" @input="onSearch" />
+  <div class="grid grid-cols-3 gap-2 mt-4">
+    <Stiker v-for="sticker in currentStickers" :key="sticker.id" :sticker="sticker" class="mb-2" />
   </div>
 </template>

@@ -25,7 +25,11 @@ export const useStickersStore = defineStore('stikersStore', () => {
     return lookup === undefined ? stickerInitValue : lookup
   }
 
-  return { addSticker, stickersList, getSticker, updateSticker, deleteSticker }
+  const getFilteredStikers = (query: string = ''): Sticker[] => {
+    return stickersList.value.filter(sticker => sticker.content.includes(query))
+  }
+
+  return { addSticker, stickersList, getSticker, updateSticker, deleteSticker, getFilteredStikers }
 }, {
   persist: true,
   share: {
